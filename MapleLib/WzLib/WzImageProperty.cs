@@ -153,6 +153,9 @@ namespace MapleLib.WzLib
                     case 2:
                         properties.Add(new WzShortProperty(name, reader.ReadInt16()) { Parent = parent });
                         break;
+                    case 18:
+                        properties.Add(new WzUShortProperty(name, reader.ReadUInt16()) { Parent = parent });
+                        break;
                     case 3:
                     case 19:
                         properties.Add(new WzIntProperty(name, reader.ReadCompressedInt()) { Parent = parent });

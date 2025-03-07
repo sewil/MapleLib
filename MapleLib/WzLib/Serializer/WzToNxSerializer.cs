@@ -264,7 +264,7 @@ namespace MapleLib.WzLib.Serializer
 
             if (node is WzDirectory || node is WzImage || node is WzSubProperty || node is WzConvexProperty || node is WzNullProperty)
                 type = 0; // no data; children only (8)
-            else if (node is WzIntProperty || node is WzShortProperty || node is WzLongProperty)
+            else if (node is WzIntProperty || node is WzShortProperty || node is WzUShortProperty || node is WzLongProperty)
                 type = 1; // int32 (4)
             else if (node is WzDoubleProperty || node is WzFloatProperty)
                 type = 2; // Double (0)
@@ -287,6 +287,10 @@ namespace MapleLib.WzLib.Serializer
             else if (node is WzShortProperty)
             {
                 bw.Write((long)((WzShortProperty)node).Value);
+            }
+            else if (node is WzUShortProperty)
+            {
+                bw.Write((long)((WzUShortProperty)node).Value);
             }
             else if (node is WzLongProperty)
             {

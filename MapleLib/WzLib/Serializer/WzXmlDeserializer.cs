@@ -166,6 +166,10 @@ namespace MapleLib.WzLib.Serializer
                     WzShortProperty shortProp = new WzShortProperty(element.GetAttribute("name"), short.Parse(element.GetAttribute("value"), formattingInfo));
                     return shortProp;
 
+                case "ushort":
+                    WzUShortProperty ushortProp = new WzUShortProperty(element.GetAttribute("name"), ushort.Parse(element.GetAttribute("value"), formattingInfo));
+                    return ushortProp;
+
                 case "long":
                     WzLongProperty longProp = new WzLongProperty(element.GetAttribute("name"), long.Parse(element.GetAttribute("value"), formattingInfo));
                     return longProp;
