@@ -628,6 +628,8 @@ namespace MapleLib.WzLib
                     }
                     File.Delete(tempFile);
 
+                    this.path = path;
+
                     wzWriter.StringCache.Clear();
                 }
             }
