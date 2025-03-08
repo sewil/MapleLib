@@ -45,7 +45,7 @@ namespace MapleLib.WzLib
         internal const ushort wzVersionHeader64bit_start = 770; // 777 for KMS, GMS v230 uses 778.. wut
 
         internal uint versionHash = 0;
-        internal short mapleStoryPatchVersion = 0;
+        internal string mapleStoryPatchVersion;
         internal WzMapleVersion maplepLocalVersion;
         internal MapleStoryLocalisation mapleLocaleVersion = MapleStoryLocalisation.Not_Known;
 
@@ -91,7 +91,7 @@ namespace MapleLib.WzLib
 
         public WzHeader Header { get { return header; } set { header = value; } }
 
-        public short Version { get { return mapleStoryPatchVersion; } set { mapleStoryPatchVersion = value; } }
+        public string Version { get { return mapleStoryPatchVersion; } set { mapleStoryPatchVersion = value; } }
 
         public string FilePath { get { return path; } }
 
@@ -138,7 +138,7 @@ namespace MapleLib.WzLib
         /// </summary>
         /// <param name="gameVersion"></param>
         /// <param name="version"></param>
-        public WzFile(short gameVersion, WzMapleVersion version)
+        public WzFile(WzMapleVersion version, string gameVersion)
         {
             wzDir = new WzDirectory();
             this.Header = WzHeader.GetDefault();
@@ -152,18 +152,9 @@ namespace MapleLib.WzLib
         /// Open a wz file from a file on the disk
         /// </summary>
         /// <param name="filePath">Path to the wz file</param>
-        /// <param name="version"></param>
-        public WzFile(string filePath, WzMapleVersion version) : this(filePath, -1, version)
-        {
-        }
-
-        /// <summary>
-        /// Open a wz file from a file on the disk
-        /// </summary>
-        /// <param name="filePath">Path to the wz file</param>
         /// <param name="gameVersion"></param>
         /// <param name="version"></param>
-        public WzFile(string filePath, short gameVersion, WzMapleVersion version)
+        public WzFile(string filePath, string gameVersion, WzMapleVersion version)
         {
             name = Path.GetFileName(filePath);
             path = filePath;
@@ -189,7 +180,7 @@ namespace MapleLib.WzLib
         {
             name = Path.GetFileName(filePath);
             path = filePath;
-            mapleStoryPatchVersion = -1;
+            mapleStoryPatchVersion = null;
             maplepLocalVersion = WzMapleVersion.CUSTOM;
 
             this.WzIv = wzIv;
@@ -251,7 +242,7 @@ namespace MapleLib.WzLib
             Debug.WriteLine(string.Format("wzVersionHeader: {0}", wzVersionHeader));
             Debug.WriteLine("----------------------------------------");
 
-            if (mapleStoryPatchVersion == -1)
+            if (mapleStoryPatchVersion == null)
             {
                 // for 64-bit client, return immediately if version 777 works correctly.
                 // -- the latest KMS update seems to have changed it to 778? 779?
@@ -259,7 +250,7 @@ namespace MapleLib.WzLib
                 {
                     for (ushort maplestoryVerToDecode = wzVersionHeader64bit_start; maplestoryVerToDecode < wzVersionHeader64bit_start + 10; maplestoryVerToDecode++) // 770 ~ 780
                     {
-                        if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, maplestoryVerToDecode, lazyParse))
+                        if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, maplestoryVerToDecode.ToString(), lazyParse))
                         {
                             return WzFileParseStatus.Success;
                         }
@@ -276,7 +267,7 @@ namespace MapleLib.WzLib
                 {
                     //Debug.WriteLine("Try decode 1 with maplestory ver: " + j);
 
-                    if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, j, lazyParse))
+                    if (TryDecodeWithWZVersionNumber(reader, wzVersionHeader, j.ToString(), lazyParse))
                     {
                         return WzFileParseStatus.Success;
                     }
@@ -345,9 +336,9 @@ namespace MapleLib.WzLib
             reader.BaseStream.Position = this.Header.FStart;
         }
 
-        private bool TryDecodeWithWZVersionNumber(WzBinaryReader reader, int useWzVersionHeader, int useMapleStoryPatchVersion, bool lazyParse)
+        private bool TryDecodeWithWZVersionNumber(WzBinaryReader reader, int useWzVersionHeader, string useMapleStoryPatchVersion, bool lazyParse)
         {
-            this.mapleStoryPatchVersion = (short)useMapleStoryPatchVersion;
+            this.mapleStoryPatchVersion = useMapleStoryPatchVersion;
 
             this.versionHash = CheckAndGetVersionHash(useWzVersionHeader, mapleStoryPatchVersion);
             if (this.versionHash == 0) // ugly hack, but that's the only way if the version number isnt known (nexon stores this in the .exe)
@@ -420,7 +411,7 @@ namespace MapleLib.WzLib
                     // coincidentally in msea v194 Map001.wz, the hash matches exactly using mapleStoryPatchVersion of 113, and it fails to decrypt later on (probably 1 in a million chance? o_O).
                     // damn, technical debt accumulating here
                     // also needs to check for 'Is64BitWzFile' as it may match TaiwanMS v113 (pre-bb) and return as false.
-                    if (Is64BitWzFile && mapleStoryPatchVersion == 113) 
+                    if (Is64BitWzFile && mapleStoryPatchVersion == "113")
                     {
                         // hack for now
                         reader.BaseStream.Position = fallbackOffsetPosition; // reset
@@ -517,11 +508,11 @@ namespace MapleLib.WzLib
         /// <param name="wzVersionHeader">The version header from .wz file.</param>
         /// <param name="maplestoryPatchVersion"></param>
         /// <returns></returns>
-        private static uint CheckAndGetVersionHash(int wzVersionHeader, int maplestoryPatchVersion)
+        private static uint CheckAndGetVersionHash(int wzVersionHeader, string maplestoryPatchVersion)
         {
             uint versionHash = 0;
 
-            foreach (char ch in maplestoryPatchVersion.ToString())
+            foreach (char ch in maplestoryPatchVersion)
             {
                 versionHash = (versionHash * 32) + (byte)ch + 1;
             }
@@ -543,7 +534,7 @@ namespace MapleLib.WzLib
         private void CreateWZVersionHash()
         {
             versionHash = 0;
-            foreach (char ch in mapleStoryPatchVersion.ToString())
+            foreach (char ch in mapleStoryPatchVersion)
             {
                 versionHash = (versionHash * 32) + (byte)ch + 1;
             }

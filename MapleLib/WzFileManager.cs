@@ -321,9 +321,9 @@ namespace MapleLib {
         /// <param name="encVersion"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public WzFile LoadWzFile(string baseName, WzMapleVersion encVersion) {
+        public WzFile LoadWzFile(string baseName, WzMapleVersion encVersion, string gameVersion) {
             string filePath = GetWzFilePath(baseName);
-            WzFile wzf = new WzFile(filePath, encVersion);
+            WzFile wzf = new WzFile(filePath, gameVersion, encVersion);
 
             WzFileParseStatus parseStatus = wzf.ParseWzFile();
             if (parseStatus != WzFileParseStatus.Success) {
@@ -353,9 +353,9 @@ namespace MapleLib {
         /// </summary>
         /// <param name="baseName"></param>
         /// <returns></returns>
-        public bool LoadLegacyDataWzFile(string baseName, WzMapleVersion encVersion) {
+        public bool LoadLegacyDataWzFile(string baseName, WzMapleVersion encVersion, string gameVersion) {
             string filePath = GetWzFilePath(baseName);
-            WzFile wzf = new WzFile(filePath, encVersion);
+            WzFile wzf = new WzFile(filePath, gameVersion, encVersion);
 
             WzFileParseStatus parseStatus = wzf.ParseWzFile();
             if (parseStatus != WzFileParseStatus.Success) {
