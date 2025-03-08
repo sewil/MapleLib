@@ -90,6 +90,8 @@ namespace MapleLib.WzLib.WzStructure
         public int? createMobInterval = null; //used for massacre pqs
         public int? fixedMobCapacity = null; //mob capacity to target (used for massacre pqs)
         public MapleBool mirror_Bottom = null; // Mirror Bottom (Reflection for objects near VRBottom of the field, arcane river maps)
+        public MapleBool unableToShop = null;
+        public MapleBool unableToChangeChannel = null;
 
         //Unknown optional
         public int? moveLimit = null;
@@ -384,6 +386,12 @@ namespace MapleLib.WzLib.WzStructure
                     case "mirror_Bottom":
                         mirror_Bottom = InfoTool.GetBool(prop);
                         break;
+                    case "bUnableToShop":
+                        unableToShop = InfoTool.GetBool(prop);
+                        break;
+                    case "bUnableToChangeChannel":
+                        unableToChangeChannel = InfoTool.GetBool(prop);
+                        break;
                     case "AmbientBGM":
                     case "AmbientBGMv":
                     case "areaCtrl":
@@ -637,6 +645,8 @@ namespace MapleLib.WzLib.WzStructure
             info["effect"] = InfoTool.SetOptionalString(effect);
             info["lvForceMove"] = InfoTool.SetOptionalInt(lvForceMove);
             info["mirror_Bottom"] = InfoTool.SetOptionalBool(mirror_Bottom);
+            info["bUnableToShop"] = InfoTool.SetOptionalBool(unableToShop);
+            info["bUnableToChangeChannel"] = InfoTool.SetOptionalBool(unableToChangeChannel);
 
             // Time mob
             if (timeMob != null)
