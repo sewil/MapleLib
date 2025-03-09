@@ -51,7 +51,7 @@ namespace MapleLib.WzLib
 
         internal bool wz_withEncryptVersionHeader = true;  // KMS update after Q4 2021, ver 1.2.357 does not contain any wz enc header information
 
-        internal byte[] WzIv;
+        public byte[] WzIv;
         #endregion
 
         /// <summary>
