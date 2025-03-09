@@ -38,6 +38,9 @@ namespace MapleLib.Configuration
         [JsonConverter(typeof(StringEnumConverter))]
         public WzMapleVersion MapleVersion = WzMapleVersion.BMS;
 
+        [JsonProperty(PropertyName = "GameVersion", NullValueHandling = NullValueHandling.Ignore)]
+        public string GameVersion = null;
+
         /// <summary>
         /// The custom encryption name for the custom WZ encryption
         /// </summary>
