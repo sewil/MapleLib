@@ -102,6 +102,11 @@ namespace MapleLib.WzLib.WzStructure.Data
                 : throw new ArgumentOutOfRangeException(nameof(portalType));
         }
 
+        public static bool TryFromCode(string code, out PortalType portalType)
+        {
+            return _codeToPortalTypes.TryGetValue(code, out portalType);
+        }
+
         public static PortalType FromCode(string code)
         {
             if (code == null)
